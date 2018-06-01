@@ -63,7 +63,7 @@ module.exports.getBookById = (req, res) => {
         	message : book.length !== 0 ? 
 	        	"Successfully fetched the detail of the book" : 
 	        	"List is currently empty", 
-        	"Book Detail" : book
+        	"Book Detail" : book[0]
         });
     });
 }
