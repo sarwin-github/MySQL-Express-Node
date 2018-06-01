@@ -10,7 +10,7 @@ module.exports.showError = (err, req, res, next) => {
 
   	if(!!err){
 	    res.status(err.status || 500);
-	    res.status(500).json({
+	    res.render('error/error.ejs', {
 	    	message: res.locals.message,
 	    	error  : res.locals.error
 	    })
