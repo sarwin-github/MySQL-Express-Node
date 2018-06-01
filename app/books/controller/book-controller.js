@@ -25,12 +25,12 @@ module.exports.getAllBooks = (req, res) => {
             });
         } 
 
-        return res.json({ 
+        return res.render('books/list.ejs', { 
         	success: true, 
         	message : books.length !== 0 ? 
 	        	"Successfully fetched the detail of the book" : 
 	        	"List is currently empty", 
-        	"List of Books" : books
+        		books : books
         });
     });
 }
@@ -38,7 +38,7 @@ module.exports.getAllBooks = (req, res) => {
 // Get book by id
 module.exports.getBookById = (req, res) => {
 	//SELECT * FROM BOOK_TABLE
-    let query = "SELECT * FROM ?? WHERE ??=?";
+    let query = "SELECT * FROM ?? WHERE ??=? LIMIT 0,1";
     let table = ["book", "id", req.params.id];
 
     query = mysql.format(query,table);
@@ -63,9 +63,16 @@ module.exports.getBookById = (req, res) => {
         	message : book.length !== 0 ? 
 	        	"Successfully fetched the detail of the book" : 
 	        	"List is currently empty", 
-        	"Book Detail" : book
+        	"Book Detail" : book[0]
         });
     });
+}
+
+module.exports.getCreateBook = (req, res) => {
+	res.render('books/create', {
+		success: true,
+		message: "You are about to create a new book"
+	})
 }
 
 // HTTP Post for creating a new book
@@ -97,14 +104,46 @@ module.exports.postCreateBook = (req, res) => {
     });
 }
 
+module.exports.getUpdateBook = (req, res) => {
+	//SELECT * FROM BOOK_TABLE
+    let query = "SELECT * FROM ?? WHERE ??=?";
+    let table = ["book", "id", req.params.id];
+
+    query = mysql.format(query,table);
+    db.get().query(query, (error,book) => {
+    	if(!book){
+            return res.status(500).json({
+            	success : false, 
+            	error   : 'The book you are looking for does not exist',
+            	message : 'Something went wrong.'
+            });
+        }
+        if(error) {
+            res.status(500).json({
+            	success : false, 
+            	error: error, 
+            	message : "Error executing MySQL query"
+            });
+        } 
+
+        return res.render('books/update',{ 
+        	success: true, 
+        	message : book.length !== 0 ? 
+	        	"Successfully fetched the detail of the book" : 
+	        	"List is currently empty", 
+        	book : book[0]
+        });
+    });
+}
+
 // HTTP PUT for updating a new book
 module.exports.putUpdateBook = (req, res) => {
 	//UPDATE BOOK_TABLE SET BOOK FIELD 1 = VALUE, BOOK FIELD 2 = VALUE  WHERE BOOK_FIELD = PARAMETER/query string
     let query = "UPDATE ?? SET ??=?, ??=?, ??=? WHERE ?? = ?";
     let table = ["book", 
-        "BookName", req.body.BookName, 
-        "AuthorName", req.body.AuthorName, 
-        "Price", req.body.Price, 
+        "BookName", req.body.bookName, 
+        "AuthorName", req.body.author, 
+        "Price", req.body.price, 
         "id", req.params.id ];
 
     query = mysql.format(query, table); 

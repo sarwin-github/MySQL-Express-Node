@@ -7,8 +7,12 @@ const bookController = require('../controller/book-controller');
 router.route('/').get(bookController.getAllBooks);
 router.route('/details/:id').get(bookController.getBookById);
 
+router.route('/create').get(bookController.getCreateBook);
 router.route('/create').post(bookController.postCreateBook);
+
+router.route('/update/:id').get(bookController.getUpdateBook);
 router.route('/update/:id').put(bookController.putUpdateBook);
+
 router.route('/delete/:id').delete(bookController.deleteBookById);
 
 module.exports = router;
